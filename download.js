@@ -36,7 +36,7 @@
 			blob,
 			reader;
 			myBlob= myBlob.call ? myBlob.bind(self) : Blob ;
-	  
+
 		if(String(this)==="true"){ //reverse arguments, allowing download.bind(true, "text/xml", "export.xml") to act as a callback
 			payload=[payload, mimeType];
 			mimeType=payload[0];
@@ -51,7 +51,7 @@
         		var ajax=new XMLHttpRequest();
         		ajax.open( "GET", url, true);
         		ajax.responseType = 'blob';
-        		ajax.onload= function(e){ 
+        		ajax.onload= function(e){
 				  download(e.target.response, fileName, defaultMime);
 				};
         		setTimeout(function(){ ajax.send();}, 0); // allows setting custom ajax headers using the return:
@@ -62,16 +62,16 @@
 
 		//go ahead and download dataURLs right away
 		if(/^data\:[\w+\-]+\/[\w+\-\.]+[,;]/.test(payload)){
-		
+
 			if(payload.length > (1024*1024*1.999) && myBlob !== toString ){
 				payload=dataUrlToBlob(payload);
 				mimeType=payload.type || defaultMime;
-			}else{			
+			}else{
 				return navigator.msSaveBlob ?  // IE10 can't do a[download], only Blobs:
 					navigator.msSaveBlob(dataUrlToBlob(payload), fileName) :
 					saver(payload) ; // everyone else can save dataURLs un-processed
 			}
-			
+
 		}//end if dataURL passed?
 
 		blob = payload instanceof myBlob ?
@@ -104,7 +104,11 @@
 				document.body.appendChild(anchor);
 				setTimeout(function() {
 					anchor.click();
-					document.body.removeChild(anchor);
+					anchor.style.display = "none";
+					//
+					//	NOT REMOVE !!! LARGE FILES CAN NOT DOWNLOAD THIS CASE
+					//
+					//document.body.removeChild(anchor);
 					if(winMode===true){setTimeout(function(){ self.URL.revokeObjectURL(anchor.href);}, 250 );}
 				}, 66);
 				return true;
@@ -127,7 +131,13 @@
 				url="data:"+url.replace(/^data:([\w\/\-\+]+)/, defaultMime);
 			}
 			f.src=url;
-			setTimeout(function(){ document.body.removeChild(f); }, 333);
+			setTimeout(function(){
+				f.style.display = "none";
+				//
+				//	NOT REMOVE !!! LARGE FILES CAN NOT DOWNLOAD THIS CASE
+				//
+				//document.body.removeChild(f);
+			}, 333);
 
 		}//end saver
 

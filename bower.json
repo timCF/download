@@ -1,5 +1,6 @@
 {
   "name": "downloadjs",
+  "version": "0.0.1",
   "main": "download.js",
   "homepage": "https://github.com/rndme/download",
   "description": "file downloading using client-side javascript",
